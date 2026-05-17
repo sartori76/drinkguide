@@ -4,6 +4,7 @@ import type { Cocktail } from "@/lib/types";
 import { CATEGORY_LABELS, UNIT_LABELS } from "@/lib/types";
 import { INGREDIENT_BY_ID } from "@/data/ingredients";
 import IMAGES from "@/data/cocktail-images.json";
+import { useFavorites } from "@/lib/favorites";
 
 const IMAGES_MAP = IMAGES as Record<string, string>;
 
@@ -20,12 +21,32 @@ function formatAmount(amount: number | null, unit: string): string {
 
 export function CocktailDetail({ cocktail, onBack }: Props) {
   const imgUrl = IMAGES_MAP[cocktail.id];
+  const { isFavorite, toggle } = useFavorites();
+  const fav = isFavorite(cocktail.id);
 
   return (
     <div className="detail">
-      <button className="back" onClick={onBack} type="button">
-        ← Voltar
-      </button>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+        <button className="back" onClick={onBack} type="button" style={{ marginBottom: 0 }}>
+          ← Voltar
+        </button>
+        <button
+          type="button"
+          onClick={() => toggle(cocktail.id)}
+          aria-label={fav ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+          style={{
+            fontSize: 28,
+            color: fav ? "var(--accent)" : "var(--text-dim)",
+            minWidth: 48,
+            minHeight: 48,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {fav ? "★" : "☆"}
+        </button>
+      </div>
 
       {imgUrl && (
         <div className="detail__hero">
