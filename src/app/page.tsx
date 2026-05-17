@@ -21,31 +21,36 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<TabId>("categories");
   const [selectedCocktail, setSelectedCocktail] = useState<Cocktail | null>(null);
 
-  // Se um cocktail está selecionado, mostra detalhes (cobre as 4 abas).
-  if (selectedCocktail) {
-    return (
-      <div className="app">
-        <CocktailDetail
-          cocktail={selectedCocktail}
-          onBack={() => setSelectedCocktail(null)}
-        />
-      </div>
-    );
+  function switchTab(tab: TabId) {
+    setSelectedCocktail(null);
+    setActiveTab(tab);
   }
 
   return (
     <div className="app">
-      {activeTab === "categories" && <CategoriesTab onSelect={setSelectedCocktail} />}
-      {activeTab === "by-name" && <ByNameTab onSelect={setSelectedCocktail} />}
-      {activeTab === "by-ingredient" && <ByIngredientTab onSelect={setSelectedCocktail} />}
-      {activeTab === "pantry" && <PantryTab onSelect={setSelectedCocktail} />}
+      {/* Conteúdo principal */}
+      {selectedCocktail ? (
+        <CocktailDetail
+          cocktail={selectedCocktail}
+          onBack={() => setSelectedCocktail(null)}
+        />
+      ) : (
+        <>
+          {activeTab === "categories" && <CategoriesTab onSelect={setSelectedCocktail} />}
+          {activeTab === "by-name" && <ByNameTab onSelect={setSelectedCocktail} />}
+          {activeTab === "by-ingredient" && <ByIngredientTab onSelect={setSelectedCocktail} />}
+          {activeTab === "pantry" && <PantryTab onSelect={setSelectedCocktail} />}
+        </>
+      )}
 
+      {/* Tab bar sempre visível — clicar em qualquer aba fecha o detalhe e navega */}
       <nav className="tabbar">
         {TABS.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={activeTab === tab.id ? "active" : ""}
+            type="button"
+            onClick={() => switchTab(tab.id)}
+            className={activeTab === tab.id && !selectedCocktail ? "active" : ""}
             aria-label={tab.label}
           >
             <span className="tab-emoji">{tab.emoji}</span>
