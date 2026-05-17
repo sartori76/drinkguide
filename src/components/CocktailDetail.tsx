@@ -7,6 +7,7 @@ import IMAGES from "@/data/cocktail-images.json";
 import { useFavorites } from "@/lib/favorites";
 import { addEntry } from "@/lib/history";
 import { useState } from "react";
+import { BartenderMode } from "@/components/BartenderMode";
 
 const IMAGES_MAP = IMAGES as Record<string, string>;
 
@@ -26,12 +27,22 @@ export function CocktailDetail({ cocktail, onBack }: Props) {
   const { isFavorite, toggle } = useFavorites();
   const fav = isFavorite(cocktail.id);
   const [toastVisible, setToastVisible] = useState(false);
+  const [bartenderActive, setBartenderActive] = useState(false);
 
   function handleMarkPrepared() {
     const note = window.prompt("Nota opcional (deixe em branco para pular):", "") ?? undefined;
     addEntry(cocktail.id, note === "" ? undefined : note);
     setToastVisible(true);
     setTimeout(() => setToastVisible(false), 2500);
+  }
+
+  if (bartenderActive) {
+    return (
+      <BartenderMode
+        cocktail={cocktail}
+        onClose={() => setBartenderActive(false)}
+      />
+    );
   }
 
   return (
@@ -73,6 +84,24 @@ export function CocktailDetail({ cocktail, onBack }: Props) {
           <span style={{ marginLeft: 12 }}>🍸 {cocktail.glassware}</span>
         )}
       </div>
+
+      <button
+        type="button"
+        onClick={() => setBartenderActive(true)}
+        style={{
+          width: "100%",
+          padding: "13px 16px",
+          background: "var(--accent)",
+          color: "var(--bg)",
+          borderRadius: 12,
+          fontSize: 15,
+          fontWeight: 600,
+          marginTop: 16,
+          marginBottom: 4,
+        }}
+      >
+        ▶ Modo preparo
+      </button>
 
       <h3>Ingredientes</h3>
       <div>
