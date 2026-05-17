@@ -1,0 +1,26 @@
+# dependencies
+node_modules/
+
+# build output
+.next/
+out/
+
+# env
+.env
+.env.local
+.env.*.local
+
+# misc
+**/.DS_Store
+*.pem
+*.tsbuildinfo
+
+# next-pwa generated (rebuild on deploy)
+public/sw.js
+public/workbox-*.js
+
+# vercel
+.vercel
+
+# debug
+npm-debug.log*
