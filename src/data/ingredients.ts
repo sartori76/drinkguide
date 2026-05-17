@@ -19,12 +19,14 @@ export const INGREDIENTS: Ingredient[] = [
     displayName: "Rum branco",
     category: "spirit",
     aliases: ["White Rum", "White Cuban Rum", "White Cuban Ron", "Light Rum", "Cuban Rum", "Rum", "White rum"],
+    substitutes: ["gold-rum"],
   },
   {
     id: "gold-rum",
     displayName: "Rum dourado",
     category: "spirit",
     aliases: ["Gold Rum", "Gold Jamaican Rum", "Aged Rum", "Amber Jamaican Rum", "Gold Puerto Rican Rum", "Blended Aged Rum", "Jamaican Rum"],
+    substitutes: ["white-rum"],
   },
   {
     id: "dark-rum",
@@ -61,6 +63,7 @@ export const INGREDIENTS: Ingredient[] = [
     displayName: "Whisky escocês (blended)",
     category: "spirit",
     aliases: ["Scotch Whisky", "Blended Scotch Whisky", "Blended Scotch", "Blended scotch whisky"],
+    substitutes: ["bourbon"],
   },
   {
     id: "islay-single-malt",
@@ -73,12 +76,14 @@ export const INGREDIENTS: Ingredient[] = [
     displayName: "Bourbon",
     category: "spirit",
     aliases: ["Bourbon", "Bourbon Whiskey", "Bourbon or Rye Whiskey", "Bourbon Whiskey or Rye"],
+    substitutes: ["scotch-whisky", "rye-whiskey"],
   },
   {
     id: "rye-whiskey",
     displayName: "Rye whiskey",
     category: "spirit",
     aliases: ["Rye Whiskey", "Rye", "Rye Whiskey or Bourbon", "Rye Whiskey or Bourbon Whiskey"],
+    substitutes: ["bourbon"],
   },
   {
     id: "irish-whiskey",
@@ -159,12 +164,14 @@ export const INGREDIENTS: Ingredient[] = [
     displayName: "Campari",
     category: "liqueur",
     aliases: ["Campari", "Bitter Campari"],
+    substitutes: ["aperol"],
   },
   {
     id: "aperol",
     displayName: "Aperol",
     category: "liqueur",
     aliases: ["Aperol"],
+    substitutes: ["campari"],
   },
   {
     id: "cynar",
@@ -442,6 +449,7 @@ export const INGREDIENTS: Ingredient[] = [
       "Freshly Squeezed Lime Juice",
       "Fresh Squeezed Lime",
     ],
+    substitutes: ["lemon-juice"],
   },
   {
     id: "lemon-juice",
@@ -456,6 +464,7 @@ export const INGREDIENTS: Ingredient[] = [
       "Fresh lemon Juice",
       "Lemon juice",
     ],
+    substitutes: ["lime-juice"],
   },
   {
     id: "orange-juice",

@@ -44,10 +44,9 @@ export interface Ingredient {
   id: string;                 // ex: "gin", "campari", "lime-juice", "scotch-whisky"
   displayName: string;        // ex: "Gin"
   category: IngredientCategory;
-  // Aliases que apontam para este ingrediente. Útil quando a receita oficial usa
-  // "White Cuban Rum" — esse string vira alias do ingrediente "white-rum".
-  // Permite a busca reversa funcionar mesmo se o usuário marcar só "rum branco".
   aliases?: string[];
+  // Substituições defensáveis — apenas onde a troca é razoável tecnicamente.
+  substitutes?: string[];
 }
 
 export type IngredientCategory =

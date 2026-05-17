@@ -106,3 +106,56 @@ export function getCocktailsByIngredient(ingredientId: string): Cocktail[] {
     c.ingredients.some((ri) => ri.ingredientId === ingredientId),
   );
 }
+
+export interface SubstitutionResult {
+  cocktail: Cocktail;
+  substitutions: Array<{ originalId: string; substituteId: string }>;
+}
+
+// Retorna cocktails que o usuário consegue fazer se aceitar até `maxSubs` substituições.
+// Exclui cocktails que já aparecem nos resultados exatos ou com 1 faltante (sem substituição).
+export function matchWithSubstitutes(
+  userIngredientIds: string[],
+  exactAndMissing1Ids: Set<string>,
+  maxSubs = 2,
+): SubstitutionResult[] {
+  const userSet = new Set(userIngredientIds);
+  const results: SubstitutionResult[] = [];
+
+  for (const cocktail of COCKTAILS) {
+    if (exactAndMissing1Ids.has(cocktail.id)) continue;
+
+    const essential = cocktail.ingredients.filter((ri) => {
+      if (ASSUMED_AVAILABLE.has(ri.ingredientId)) return false;
+      if (ri.optional) return false;
+      const ing = INGREDIENT_BY_ID[ri.ingredientId];
+      if (ing?.category === "garnish") return false;
+      return true;
+    });
+
+    const missing = essential.filter((ri) => !userSet.has(ri.ingredientId));
+    if (missing.length === 0 || missing.length > maxSubs) continue;
+
+    // Try to cover each missing ingredient with a substitute the user has
+    const substitutions: Array<{ originalId: string; substituteId: string }> = [];
+    let canMake = true;
+
+    for (const ri of missing) {
+      const ing = INGREDIENT_BY_ID[ri.ingredientId];
+      const sub = ing?.substitutes?.find((s) => userSet.has(s));
+      if (sub) {
+        substitutions.push({ originalId: ri.ingredientId, substituteId: sub });
+      } else {
+        canMake = false;
+        break;
+      }
+    }
+
+    if (canMake && substitutions.length > 0) {
+      results.push({ cocktail, substitutions });
+    }
+  }
+
+  results.sort((a, b) => a.substitutions.length - b.substitutions.length || a.cocktail.name.localeCompare(b.cocktail.name, "pt-BR"));
+  return results;
+}

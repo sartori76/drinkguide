@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Cocktail, IngredientCategory } from "@/lib/types";
 import { INGREDIENT_CATEGORY_LABELS } from "@/lib/types";
 import { INGREDIENTS, INGREDIENT_BY_ID } from "@/data/ingredients";
-import { getAllUsedIngredientIds, matchCocktails } from "@/lib/matching";
+import { getAllUsedIngredientIds, matchCocktails, matchWithSubstitutes } from "@/lib/matching";
 import { CocktailCard } from "./CocktailCard";
 
 // Persistência em localStorage para a despensa sobreviver entre sessões.
@@ -75,10 +75,18 @@ export function PantryTab({ onSelect }: { onSelect: (c: Cocktail) => void }) {
     [pantry],
   );
 
+  const substitutionResults = useMemo(() => {
+    const baseIds = new Set([
+      ...results.exact.map((r) => r.cocktail.id),
+      ...results.missing1.map((r) => r.cocktail.id),
+    ]);
+    return matchWithSubstitutes(Array.from(pantry), baseIds);
+  }, [pantry, results]);
+
   // Tela de resultados
   if (mode === "results") {
     const totalShown =
-      results.exact.length + results.missing1.length + results.missing2.length;
+      results.exact.length + results.missing1.length + results.missing2.length + substitutionResults.length;
 
     return (
       <>
@@ -147,6 +155,30 @@ export function PantryTab({ onSelect }: { onSelect: (c: Cocktail) => void }) {
                     onClick={() => onSelect(r.cocktail)}
                     showMissing={r.missing}
                   />
+                ))}
+              </section>
+            )}
+
+            {substitutionResults.length > 0 && (
+              <section>
+                <div className="section-header">
+                  Com substituições ({substitutionResults.length})
+                </div>
+                {substitutionResults.map((r) => (
+                  <div key={r.cocktail.id} onClick={() => onSelect(r.cocktail)} className="cocktail-card" style={{ cursor: "pointer" }}>
+                    <div className="name">{r.cocktail.name}</div>
+                    <div style={{ marginTop: 4, display: "flex", flexWrap: "wrap", gap: 4 }}>
+                      {r.substitutions.map((s) => {
+                        const orig = INGREDIENT_BY_ID[s.originalId]?.displayName ?? s.originalId;
+                        const sub = INGREDIENT_BY_ID[s.substituteId]?.displayName ?? s.substituteId;
+                        return (
+                          <span key={s.originalId} className="missing-tag">
+                            {sub} → {orig}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
                 ))}
               </section>
             )}
