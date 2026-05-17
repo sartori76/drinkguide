@@ -5,6 +5,8 @@ import { CATEGORY_LABELS, UNIT_LABELS } from "@/lib/types";
 import { INGREDIENT_BY_ID } from "@/data/ingredients";
 import IMAGES from "@/data/cocktail-images.json";
 import { useFavorites } from "@/lib/favorites";
+import { addEntry } from "@/lib/history";
+import { useState } from "react";
 
 const IMAGES_MAP = IMAGES as Record<string, string>;
 
@@ -23,6 +25,14 @@ export function CocktailDetail({ cocktail, onBack }: Props) {
   const imgUrl = IMAGES_MAP[cocktail.id];
   const { isFavorite, toggle } = useFavorites();
   const fav = isFavorite(cocktail.id);
+  const [toastVisible, setToastVisible] = useState(false);
+
+  function handleMarkPrepared() {
+    const note = window.prompt("Nota opcional (deixe em branco para pular):", "") ?? undefined;
+    addEntry(cocktail.id, note === "" ? undefined : note);
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), 2500);
+  }
 
   return (
     <div className="detail">
@@ -104,7 +114,43 @@ export function CocktailDetail({ cocktail, onBack }: Props) {
         </>
       )}
 
-      <div style={{ marginTop: 32, fontSize: 12, color: "var(--text-dim)" }}>
+      <div style={{ marginTop: 24 }}>
+        <button
+          type="button"
+          onClick={handleMarkPrepared}
+          style={{
+            width: "100%",
+            padding: "14px 16px",
+            background: "var(--bg-elev)",
+            border: "1px solid var(--border)",
+            borderRadius: 12,
+            color: "var(--text)",
+            fontSize: 15,
+            fontWeight: 500,
+            textAlign: "center",
+          }}
+        >
+          ✓ Marcar como preparado
+        </button>
+        {toastVisible && (
+          <div
+            style={{
+              marginTop: 8,
+              padding: "10px 14px",
+              background: "rgba(16, 185, 129, 0.15)",
+              border: "1px solid rgba(16, 185, 129, 0.3)",
+              borderRadius: 8,
+              color: "#10b981",
+              fontSize: 13,
+              textAlign: "center",
+            }}
+          >
+            ✓ Registrado no histórico!
+          </div>
+        )}
+      </div>
+
+      <div style={{ marginTop: 24, fontSize: 12, color: "var(--text-dim)" }}>
         Receita oficial:{" "}
         <a href={cocktail.ibaUrl} target="_blank" rel="noreferrer">
           iba-world.com ↗

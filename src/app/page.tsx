@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Cocktail } from "@/lib/types";
 import { CategoriesTab } from "@/components/CategoriesTab";
 import { ByNameTab } from "@/components/ByNameTab";
 import { ByIngredientTab } from "@/components/ByIngredientTab";
 import { PantryTab } from "@/components/PantryTab";
 import { CocktailDetail } from "@/components/CocktailDetail";
+import { HistoryScreen } from "@/components/HistoryScreen";
+import { loadHistory } from "@/lib/history";
 
 type TabId = "categories" | "by-name" | "by-ingredient" | "pantry";
 
@@ -20,19 +22,99 @@ const TABS: { id: TabId; label: string; emoji: string }[] = [
 export default function Home() {
   const [activeTab, setActiveTab] = useState<TabId>("categories");
   const [selectedCocktail, setSelectedCocktail] = useState<Cocktail | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
+  const [historyCount, setHistoryCount] = useState(0);
+
+  useEffect(() => {
+    setHistoryCount(loadHistory().length);
+  }, []);
+
+  // Refresh history count whenever history screen closes
+  function handleHistoryClose() {
+    setShowHistory(false);
+    setHistoryCount(loadHistory().length);
+  }
 
   function switchTab(tab: TabId) {
     setSelectedCocktail(null);
+    setShowHistory(false);
     setActiveTab(tab);
   }
 
+  // History screen takes over everything
+  if (showHistory) {
+    return (
+      <div className="app">
+        <HistoryScreen
+          onBack={handleHistoryClose}
+          onSelect={(c) => { handleHistoryClose(); setSelectedCocktail(c); }}
+        />
+      </div>
+    );
+  }
+
+  const showTabBar = !selectedCocktail;
+
   return (
     <div className="app">
-      {/* Conteúdo principal */}
+      {/* Global header — hidden inside CocktailDetail */}
+      {showTabBar && (
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "10px 16px 6px",
+          borderBottom: "1px solid var(--border)",
+        }}>
+          <span style={{ fontSize: 14, color: "var(--text-muted)", fontWeight: 500 }}>DrinkGuide</span>
+          <button
+            type="button"
+            onClick={() => setShowHistory(true)}
+            aria-label="Ver histórico"
+            style={{
+              position: "relative",
+              fontSize: 22,
+              minWidth: 44,
+              minHeight: 44,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            📖
+            {historyCount > 0 && (
+              <span style={{
+                position: "absolute",
+                top: 4,
+                right: 4,
+                background: "var(--accent)",
+                color: "var(--bg)",
+                borderRadius: "50%",
+                minWidth: 16,
+                height: 16,
+                fontSize: 10,
+                fontWeight: 700,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                lineHeight: 1,
+                padding: "0 3px",
+              }}>
+                {historyCount > 99 ? "99+" : historyCount}
+              </span>
+            )}
+          </button>
+        </div>
+      )}
+
+      {/* Main content */}
       {selectedCocktail ? (
         <CocktailDetail
           cocktail={selectedCocktail}
-          onBack={() => setSelectedCocktail(null)}
+          onBack={() => {
+            setSelectedCocktail(null);
+            setHistoryCount(loadHistory().length);
+          }}
         />
       ) : (
         <>
