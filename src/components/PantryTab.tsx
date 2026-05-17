@@ -178,19 +178,37 @@ export function PantryTab({ onSelect }: { onSelect: (c: Cocktail) => void }) {
         </p>
       </header>
 
-      <div className="pantry-result-banner">
-        <strong>{pantry.size}</strong> selecionado{pantry.size !== 1 ? "s" : ""} •{" "}
-        <button
-          onClick={() => setMode("results")}
-          disabled={pantry.size === 0}
-          style={{
-            color: pantry.size === 0 ? "var(--text-dim)" : "var(--accent)",
-            textDecoration: "underline",
-            cursor: pantry.size === 0 ? "not-allowed" : "pointer",
-          }}
-        >
-          ver o que dá pra fazer →
-        </button>
+      <div className="pantry-result-banner" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span>
+          <strong>{pantry.size}</strong> selecionado{pantry.size !== 1 ? "s" : ""} •{" "}
+          <button
+            onClick={() => setMode("results")}
+            disabled={pantry.size === 0}
+            style={{
+              color: pantry.size === 0 ? "var(--text-dim)" : "var(--accent)",
+              textDecoration: "underline",
+              cursor: pantry.size === 0 ? "not-allowed" : "pointer",
+            }}
+          >
+            ver o que dá pra fazer →
+          </button>
+        </span>
+        {pantry.size > 0 && (
+          <button
+            type="button"
+            onClick={() => {
+              if (window.confirm("Limpar todos os ingredientes da despensa?")) {
+                const empty = new Set<string>();
+                savePantry(empty);
+                setPantry(empty);
+              }
+            }}
+            style={{ fontSize: 12, color: "var(--text-muted)", textDecoration: "underline" }}
+            aria-label="Limpar despensa"
+          >
+            limpar
+          </button>
+        )}
       </div>
 
       {CATEGORY_ORDER.map((cat) => {
