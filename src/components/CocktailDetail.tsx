@@ -3,6 +3,9 @@
 import type { Cocktail } from "@/lib/types";
 import { CATEGORY_LABELS, UNIT_LABELS } from "@/lib/types";
 import { INGREDIENT_BY_ID } from "@/data/ingredients";
+import IMAGES from "@/data/cocktail-images.json";
+
+const IMAGES_MAP = IMAGES as Record<string, string>;
 
 interface Props {
   cocktail: Cocktail;
@@ -11,19 +14,26 @@ interface Props {
 
 function formatAmount(amount: number | null, unit: string): string {
   if (amount === null) return "a gosto";
-  // Evita "30.0" — só mostra decimal quando relevante
   const formatted = Number.isInteger(amount) ? amount.toString() : amount.toString();
   return `${formatted} ${unit}`;
 }
 
 export function CocktailDetail({ cocktail, onBack }: Props) {
+  const imgUrl = IMAGES_MAP[cocktail.id];
+
   return (
     <div className="detail">
-      <button className="back" onClick={onBack}>
+      <button className="back" onClick={onBack} type="button">
         ← Voltar
       </button>
 
-      <h2>{cocktail.name}</h2>
+      {imgUrl && (
+        <div className="detail__hero">
+          <img src={imgUrl} alt={cocktail.name} className="detail__hero-img" />
+        </div>
+      )}
+
+      <h2 style={{ marginTop: imgUrl ? 16 : 0 }}>{cocktail.name}</h2>
       <div className="meta">
         <span className={`cat-pill ${cocktail.category}`}>
           {CATEGORY_LABELS[cocktail.category]}
