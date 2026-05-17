@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Fundo arredondado (22% de 512 = ~113px) cor do tema dark -->
+  <rect width="512" height="512" rx="113" ry="113" fill="#0a0a0a"/>
+
+  <!-- === COPO OLD FASHIONED === -->
+  <!-- Forma trapezoidal: base menor em baixo, boca maior em cima -->
+  <!-- Coordenadas com ~15% padding: área útil ~77px a ~435px (358px) -->
+  <!-- Copo: topo em y=120, base em y=390, lados levemente inclinados -->
+  <!-- Boca: x=145..367 (largura 222), base: x=175..337 (largura 162) -->
+
+  <!-- Líquido (70% da altura interna do copo: de y=390 até ~220) -->
+  <!-- Clipado pela forma do copo -->
+  <clipPath id="glass-clip">
+    <path d="M148,122 L364,122 L340,388 L172,388 Z"/>
+  </clipPath>
+
+  <!-- Fundo do copo (paredes — apenas o fill do trapézio, sem líquido) -->
+  <path d="M148,122 L364,122 L340,388 L172,388 Z"
+        fill="#1a1008"
+        stroke="none"/>
+
+  <!-- Líquido Negroni (#c8473a) — ocupa de y=220 até y=388 (70% da altura de 266px) -->
+  <rect x="148" y="222" width="216" height="166"
+        clip-path="url(#glass-clip)"
+        fill="#c8473a"/>
+
+  <!-- Reflexo sutil no líquido -->
+  <rect x="148" y="222" width="216" height="18"
+        clip-path="url(#glass-clip)"
+        fill="rgba(255,255,255,0.07)"/>
+
+  <!-- Cubos de gelo (3 quadrados rotacionados, ~20% opacity branca) -->
+  <g clip-path="url(#glass-clip)" opacity="0.22">
+    <!-- Cubo 1 -->
+    <rect x="175" y="240" width="52" height="52" rx="5" ry="5"
+          transform="rotate(-12, 201, 266)"
+          fill="white" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+    <!-- Cubo 2 -->
+    <rect x="238" y="255" width="48" height="48" rx="5" ry="5"
+          transform="rotate(8, 262, 279)"
+          fill="white" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+    <!-- Cubo 3 -->
+    <rect x="210" y="308" width="44" height="44" rx="5" ry="5"
+          transform="rotate(-5, 232, 330)"
+          fill="white" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Paredes e borda do copo (#d4a574, traço 6px) -->
+  <path d="M148,122 L364,122 L340,388 L172,388 Z"
+        fill="none"
+        stroke="#d4a574"
+        stroke-width="6"
+        stroke-linejoin="round"/>
+
+  <!-- Base do copo (linha horizontal grossa) -->
+  <line x1="162" y1="395" x2="350" y2="395"
+        stroke="#d4a574" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- === MEIA FATIA DE LARANJA na borda direita === -->
+  <!-- Centro: x=340, y=138 (borda superior direita do copo) -->
+  <!-- Semicírculo com gomos sugeridos por linhas radiais -->
+  <g transform="translate(340, 136)">
+    <!-- Casca externa (aro) -->
+    <path d="M0,-44 A44,44 0 0,1 44,0 L0,0 Z"
+          fill="#e8a04a" stroke="none"/>
+    <!-- Polpa interna (mais clara) -->
+    <path d="M0,-37 A37,37 0 0,1 37,0 L0,0 Z"
+          fill="#f0b85a" stroke="none"/>
+    <!-- Gomos radiais (linhas de fatia) -->
+    <line x1="0" y1="0" x2="0" y2="-37"
+          stroke="#e8a04a" stroke-width="1.5" opacity="0.7"/>
+    <line x1="0" y1="0" x2="26" y2="-27"
+          stroke="#e8a04a" stroke-width="1.5" opacity="0.7"/>
+    <line x1="0" y1="0" x2="37" y2="0"
+          stroke="#e8a04a" stroke-width="1.5" opacity="0.7"/>
+    <line x1="0" y1="0" x2="13" y2="-35"
+          stroke="#e8a04a" stroke-width="1.5" opacity="0.7"/>
+    <line x1="0" y1="0" x2="35" y2="-13"
+          stroke="#e8a04a" stroke-width="1.5" opacity="0.7"/>
+    <!-- Borda da casca -->
+    <path d="M0,-44 A44,44 0 0,1 44,0"
+          fill="none" stroke="#c87830" stroke-width="2"/>
+    <!-- Linha de base do semicírculo -->
+    <line x1="0" y1="-44" x2="0" y2="0"
+          stroke="#c87830" stroke-width="2"/>
+    <line x1="0" y1="0" x2="44" y2="0"
+          stroke="#c87830" stroke-width="2"/>
+    <!-- Palito/pick encaixado no copo -->
+    <line x1="0" y1="0" x2="-18" y2="14"
+          stroke="#d4a574" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+  </g>
+</svg>
